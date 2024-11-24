@@ -1,0 +1,26 @@
+{% extends 'C:\Users\davla\PycharmProjects\Diploma\diploma\templates\base.html'%}
+
+{% block title %}
+signup
+{% endblock %}
+
+{% block header %}
+{{block.super}}
+{% endblock %}
+
+{% block navigation %}
+    {{block.super}}
+{% endblock  %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <form method="post" class="w-25 p-3 border rounded shadow">
+    <h5 class="text-center">Регистрация пользователя</h5>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="d-flex justify-content-center">
+    <button type="submit" class="btn btn-primary btn-sm">Зарегистрироваться</button>
+    </div>
+  </form>
+</div>
+{% endblock  %}

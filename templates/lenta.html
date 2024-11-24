@@ -1,0 +1,76 @@
+{% extends 'C:\Users\davla\PycharmProjects\Diploma\diploma\templates\base.html'%}
+
+{% block title %}
+lenta
+{% endblock %}
+
+
+{% block header %}
+{{block.super}}
+{% endblock %}
+
+{% block navigation %}
+    {{block.super}}
+{% endblock  %}
+
+
+{% block content %}
+    <h1 class="text-center">Список рецептов</h1>
+
+    <!-- Выпадающий список для выбора количества элементов -->
+    <form method="get" class="text-center">
+        <label for="recipes_on_page">Количество элементов на странице:</label>
+        <select name="recipes_on_page" id="recipes_on_page" onchange="this.form.submit()">
+            <option value="3" {% if recipes_on_page == 3 %}selected{% endif %}>3</option>
+            <option value="5" {% if recipes_on_page == 5 %}selected{% endif %}>5</option>
+            <option value="10" {% if recipes_on_page == 10 %}selected{% endif %}>10</option>
+        </select>
+        <noscript><button type="submit">Применить</button></noscript>
+    </form>
+
+    <!-- Список постов -->
+    <ul class="text-center">
+        {% for recipe in page_obj %}
+            <li class="text-center">
+                <h5>{{ recipe.title }}</h5>
+                <small class="text-muted">Дата: {{ recipe.created_at|date:"d.m.Y H:i" }}</small>
+                <p>{{ recipe.description }}</p>
+                <p>{{ recipe.ingredients }}</p>
+                <p>{{ recipe.instructions }}</p>
+
+            </li>
+        {% empty %}
+            <p>Нет постов.</p>
+        {% endfor %}
+    </ul>
+
+    <!-- Пагинация -->
+    <div class="text-center">
+        <div>
+            <p>Страница {{page_obj.number}} из {{ page_obj.paginator.num_pages }}</p>
+        </div>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&recipes_on_page={{ recipes_on_page }}">&laquo; Первая</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&recipes_on_page={{ recipes_on_page }}">Назад</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">{{ page_obj.number }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&recipes_on_page={{ recipes_on_page }}">Вперед</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&recipes_on_page={{ recipes_on_page }}">Последняя &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
