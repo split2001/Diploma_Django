@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from my_project.views import sign_up, base, main, log_out, lenta, add_recipe
+from my_project.views import sign_up, base, main, log_out, lenta, add_recipe, my_recipes
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +27,9 @@ urlpatterns = [
     path('main/', main),
     path('logout', log_out),
     path('lenta/', lenta),
-    path('add_recipe/', add_recipe)
+    path('add_recipe/', add_recipe),
+    path('my_recipes/', my_recipes)
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

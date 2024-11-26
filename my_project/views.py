@@ -23,21 +23,22 @@ def sign_up(request):
         login_form = AuthenticationForm()  # создаем форму с данными
         if form.is_valid():  # проверка на правильность заполнения формы
             form.save()
-            username = form.cleaned_data['username']  # form.cleaned_data словарь, содержащий очищенные данные
-            password = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-            email = form.cleaned_data['email']
-            age = form.cleaned_data['age']
-            if User.objects.filter(username=username).exists():
-                form.add_error('username', 'Пользователь с таким именем уже существует')
-            elif password != password2:
-                form.add_error('repeat_password', 'Пароли не совпадают')
-            else:
-                user = User.objects.create(username=username, age=age, email=email,
-                                           password=password)  # сохраняем нового пользователя в базу данных
-                user = authenticate(username=username, password=password)  # выполняем аутентификацию
-                if user:
-                    login(request, user)  # autologging после регистрации пользователя
+            # username = form.cleaned_data['username']  # form.cleaned_data словарь, содержащий очищенные данные
+            # password = form.cleaned_data['password1']
+            # password2 = form.cleaned_data['password2']
+            # email = form.cleaned_data['email']
+            # age = form.cleaned_data['age']
+            # if User.objects.filter(username=username).exists():
+            #     form.add_error('username', 'Пользователь с таким именем уже существует')
+            # elif password != password2:
+            #     form.add_error('repeat_password', 'Пароли не совпадают')
+            # else:
+            #     user = User.objects.create(username=username, age=age, email=email,
+            #                                password=password)  # сохраняем нового пользователя в базу данных
+            #     user = authenticate(username=username, password=password)  # выполняем аутентификацию
+            #     if user:
+            user = form.save()
+            login(request, user)  # autologging после регистрации пользователя
             return redirect('/main')  # Перенаправляет на главную страницу после регистрации
     elif 'login' in request.POST:
         form = UserRegister()
@@ -94,6 +95,10 @@ def lenta(request):
 
     page_number = request.GET.get('page')  # получаем номер страницы, на которую переходит пользователь
 
-    page_obg = paginator.get_page(page_number)  # получаем посты для текущей страницы
+    page_obj = paginator.get_page(page_number)  # получаем посты для текущей страницы
 
-    return render(request, 'lenta.html', {'page_obg': page_obg, 'recipes_on_page': recipes_on_page})
+    return render(request, 'lenta.html', {'page_obj': page_obj, 'recipes_on_page': recipes_on_page})
+
+
+def my_recipes(request):
+    return render(request, 'my_recipes.html')
