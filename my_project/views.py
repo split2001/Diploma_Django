@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate, logout
 from .forms import UserRegister, RecipeForm
 from .models import User, Recipe
 from django.core.paginator import Paginator
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
@@ -100,5 +100,26 @@ def lenta(request):
     return render(request, 'lenta.html', {'page_obj': page_obj, 'recipes_on_page': recipes_on_page})
 
 
-def my_recipes(request):
-    return render(request, 'my_recipes.html')
+@login_required
+def add_favorites(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.user in recipe.favorites.all():
+        recipe.favorites.remove(request.user)
+    else:
+        recipe.favorites.add(request.user)
+    return redirect('/lenta')
+
+
+@login_required
+def remove_favorites(request, recipe_id):
+    user = request.user
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    recipe.favorites.remove(user)
+    return redirect('/selected')
+
+
+@login_required
+def selected(request):
+    user = request.user
+    selected_recipe = Recipe.objects.filter(favorites=user)
+    return render(request, 'selected.html', {'selected_recipe': selected_recipe})

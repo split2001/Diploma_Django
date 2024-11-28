@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from my_project.views import sign_up, base, main, log_out, lenta, add_recipe, my_recipes
+from my_project.views import sign_up, base, main, log_out, lenta, add_recipe, add_favorites, selected, remove_favorites
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,7 +28,9 @@ urlpatterns = [
     path('logout', log_out),
     path('lenta/', lenta),
     path('add_recipe/', add_recipe),
-    path('my_recipes/', my_recipes)
+    path('add_favorites/<int:recipe_id>/', add_favorites, name='add_favorites'),
+    path('selected', selected),
+    path('remove_favorites/<int:recipe_id>/', remove_favorites, name='remove_favorites')
 ]
 
 if settings.DEBUG:
