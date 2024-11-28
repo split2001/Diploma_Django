@@ -40,7 +40,7 @@ lenta
         {% for recipe in page_obj %}
             <li class="text-center">
                 <h5>{{ recipe.title }}</h5>
-                <small class="text-muted">Дата: {{ recipe.created_at|date:"d.m.Y H:i" }}</small>
+<!--                <small class="text-muted">Дата: {{ recipe.created_at|date:"d.m.Y H:i" }}</small>-->
                 <p>{{ recipe.description }}</p>
                 <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="img-thumbnail">
                 <p>{{ recipe.ingredients }}</p>
@@ -68,7 +68,7 @@ lenta
     <!-- Пагинация -->
     <div class="text-center">
         <div>
-            <p>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</p>
+            <p>Страница {{page_obj.number}} из {{ page_obj.paginator.num_pages }}</p>
         </div>
         <ul class="pagination d-flex justify-content-center">
             {% if page_obj.has_previous %}

@@ -22,29 +22,15 @@ def sign_up(request):
         form = UserRegister(request.POST)
         login_form = AuthenticationForm()  # создаем форму с данными
         if form.is_valid():  # проверка на правильность заполнения формы
-            form.save()
-            # username = form.cleaned_data['username']  # form.cleaned_data словарь, содержащий очищенные данные
-            # password = form.cleaned_data['password1']
-            # password2 = form.cleaned_data['password2']
-            # email = form.cleaned_data['email']
-            # age = form.cleaned_data['age']
-            # if User.objects.filter(username=username).exists():
-            #     form.add_error('username', 'Пользователь с таким именем уже существует')
-            # elif password != password2:
-            #     form.add_error('repeat_password', 'Пароли не совпадают')
-            # else:
-            #     user = User.objects.create(username=username, age=age, email=email,
-            #                                password=password)  # сохраняем нового пользователя в базу данных
-            #     user = authenticate(username=username, password=password)  # выполняем аутентификацию
-            #     if user:
             user = form.save()
             login(request, user)  # autologging после регистрации пользователя
             return redirect('/main')  # Перенаправляет на главную страницу после регистрации
     elif 'login' in request.POST:
         form = UserRegister()
-        login_form = AuthenticationForm(request, data=request.POST)
+        login_form = AuthenticationForm(request, data=request.POST)  # data=request.POST отправляет данные из формы
+        # в объект AuthenticationForm, чтобы проверить их валидность
         if login_form.is_valid():
-            user = login_form.get_user()
+            user = login_form.get_user()  # получаем пользователя, который ввел верные данные
             login(request, user)
             return redirect('/main')
         else:
@@ -80,7 +66,7 @@ def add_recipe(request):
 
 
 def lenta(request):
-    recipes = Recipe.objects.all().order_by('created_at')
+    recipes = Recipe.objects.all().order_by('created_at')  # получаем информацию из БД
     recipes_on_page = request.GET.get('recipes_on_page', 3)  # делаем запрос на количество элементов на странице,
     # по умолчанию 3
     try:
@@ -103,7 +89,8 @@ def lenta(request):
 @login_required
 def add_favorites(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
-    if request.user in recipe.favorites.all():
+    if request.user in recipe.favorites.all():  # проверяем добавил ли request.user - текущий пользователь
+        # рецепт в избранное
         recipe.favorites.remove(request.user)
     else:
         recipe.favorites.add(request.user)
@@ -111,8 +98,8 @@ def add_favorites(request, recipe_id):
 
 
 @login_required
-def remove_favorites(request, recipe_id):
-    user = request.user
+def remove_favorites(request, recipe_id):  # recipe_id используется как идентификатор
+    user = request.user  # request.user - текущий пользователь
     recipe = get_object_or_404(Recipe, id=recipe_id)
     recipe.favorites.remove(user)
     return redirect('/selected')
