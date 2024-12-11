@@ -5,38 +5,42 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" style="margin-top: 20px;">
+<div class="container" style="margin-top: 20px; max-width: 900px;">
     <h1 class="text-center">Избранные рецепты</h1>
-    <style>
-        .img-thumbnail {
-            max-width: 500px;  /* Ограничиваем ширину изображения */
-            max-height: 400px; /* Ограничиваем высоту изображения */
-            object-fit: cover; /* Сохраняем пропорции изображения */
-        }
-    </style>
 
-    {% if selected_recipe %}
-        <ul class="text-center" style="list-style-type: none;">
+    <div class="row">
+        {% if selected_recipe %}
             {% for recipe in selected_recipe %}
-                <li>
-                    <h5>{{ recipe.title }}</h5>
-                    <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="img-thumbnail">
-                    <p>{{ recipe.description }}</p>
-                    <p>{{ recipe.ingredients }}</p>
-                    <p>{{ recipe.instructions }}</p>
-                    <p>{{ recipe.user }}</p>
-                    <small class="text-muted">Добавлен: {{ recipe.created_at|date:"d.m.Y H:i" }}</small>
-
-                    <!-- Кнопка "Удалить из избранного" -->
-                    <form method="post" action="{% url 'remove_favorites' recipe.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Удалить из избранного</button>
-                    </form>
-                </li>
+                <div class="col-md-6 mb-4"> <!-- Две карточки в ряду -->
+                    <div class="card shadow-sm h-100">
+                        {% if recipe.image %}
+                        <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                        {% else %}
+                        <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                            <rect width="100%" height="100%" fill="#55595c"></rect>
+                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Нет изображения</text>
+                        </svg>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ recipe.title }}</h5>
+                            <p class="card-text text-truncate" style="max-height: 3em; overflow: hidden;">{{ recipe.description }}</p>
+                            <p class="card-text"><strong>Ингредиенты:</strong> {{ recipe.ingredients }}</p>
+                            <p class="card-text"><strong>Пользователь:</strong> {{ recipe.user }}</p>
+                            <small class="text-muted">Добавлен: {{ recipe.created_at|date:"d.m.Y H:i" }}</small>
+                        </div>
+                        <div class="card-footer text-center">
+                            <!-- Кнопка "Удалить из избранного" -->
+                            <form method="post" action="{% url 'remove_favorites' recipe.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Удалить из избранного</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-center">Вы ещё не добавили рецепты в избранное.</p>
-    {% endif %}
+        {% else %}
+            <p class="text-center">Вы ещё не добавили рецепты в избранное.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
